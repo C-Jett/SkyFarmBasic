@@ -1,14 +1,16 @@
 package sample;
 
+import com.google.gson.Gson;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
+import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import java.security.Key;
+import java.util.*;
 
 
 public class Controller implements Initializable {
@@ -67,6 +69,33 @@ public class Controller implements Initializable {
         tree.setRoot(root);
     }
 
+    public Map.Entry<String,Items> getEntrySet(String findingKey) {
+        ArrayList<HashMap<String, Items>> toCheck = new ArrayList<>();
+        toCheck.add(Main.itemMap);
+        while (!toCheck.isEmpty()) {
+            HashMap<String, Items> checking = toCheck.remove(0);
+            for (Map.Entry<String, Items> entry : checking.entrySet()) {
+                if (entry.getKey().equals(findingKey)) return entry;
+                if (entry.getValue().getType()) toCheck.add(entry.getValue().getChildren());
+            }
+        }
+        return null;
+    }
+
+    public boolean containsKey(String findingKey){
+        ArrayList<HashMap<String, Items>> toCheck = new ArrayList<>();
+        toCheck.add(Main.itemMap);
+        while(!toCheck.isEmpty()){
+            HashMap<String, Items> checking = toCheck.remove(0);
+            for(Map.Entry<String,Items> entry:checking.entrySet()){
+                if (entry.getKey().equals(findingKey)) return true;
+                if (entry.getValue().getType()) toCheck.add(entry.getValue().getChildren());
+            }
+
+        };
+        return false;
+    }
+
     //Adds new item to the tree with the selected value
     @FXML
     void addNewItem(ActionEvent event) {
@@ -82,6 +111,14 @@ public class Controller implements Initializable {
             Main.itemMap.put(newItem.getName(), newItem);
             selectedItem.getChildren().add(new TreeItem<>(newItem.getName()));
             selectedItem.setExpanded(true);
+
+            System.out.println(new Gson().toJson(Main.itemMap));
+            try {
+                PrintWriter writer = new PrintWriter(new File("skyfarm.json"));
+                writer.print(new Gson().toJson(Main.itemMap));
+                writer.close();
+            }
+            catch (IOException e){e.printStackTrace();}
         }
 
 
@@ -89,8 +126,24 @@ public class Controller implements Initializable {
 
     @FXML
     void confirmEdit(ActionEvent event) {
+        try{
+            FileReader file = new FileReader(new File("skyfarm.json"));
+            BufferedReader reader = new BufferedReader(file);
 
-   }
+            String line;
+            String output = "";
+
+            while((line = reader.readLine()) != null){
+                output += line;
+            }
+            Main.itemMap = new Gson().fromJson(output,Main.itemMap.getClass());
+            Map.Entry<String, Items> mapped;
+            if((mapped = getEntrySet(nameBox.getText()))!=null){
+                ////FINISH THIS TOMORROW
+            }
+            System.out.println(Main.itemMap);
+
+        } catch(IOException e){e.printStackTrace();}}
 
     @FXML
     void removeItem(ActionEvent event) {

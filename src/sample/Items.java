@@ -1,19 +1,19 @@
 package sample;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 
 import java.awt.*;
+import java.util.HashMap;
 
 public abstract class Items {
     private SimpleStringProperty name;
-    private DoubleProperty price;
-    private IntegerProperty xCoord;
-    private IntegerProperty yCoord;
-    private IntegerProperty lengthSpan;
-    private IntegerProperty widthSpan;
+    private SimpleDoubleProperty price;
+    private SimpleIntegerProperty xCoord;
+    private SimpleIntegerProperty yCoord;
+    private SimpleIntegerProperty lengthSpan;
+    private SimpleIntegerProperty widthSpan;
     private Color color;
+    private HashMap<String, Items> children = new HashMap<>();
 
 
 
@@ -23,10 +23,21 @@ public abstract class Items {
                  Integer yCoord,
                  Integer lengthSpan,
                  Integer widthSpan)
-    {this.name = new SimpleStringProperty(name);}
+    {
+        this.name = new SimpleStringProperty(name);
+        this.price = new SimpleDoubleProperty(price);
+        this.xCoord = new SimpleIntegerProperty(xCoord);
+        this.yCoord = new SimpleIntegerProperty(yCoord);
+        this.lengthSpan = new SimpleIntegerProperty(lengthSpan);
+        this.xCoord = new SimpleIntegerProperty(lengthSpan);
+    }
 
     abstract boolean getType();
 
+    public HashMap<String,Items> getChildren(){
+        if(!getType()) return null;
+        return children;
+    }
     public double getPrice() {
         return price.get();
     }
