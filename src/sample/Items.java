@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.awt.*;
 
-public class Items {
+public abstract class Items {
     private SimpleStringProperty name;
     private DoubleProperty price;
     private IntegerProperty xCoord;
@@ -15,6 +15,8 @@ public class Items {
     private IntegerProperty widthSpan;
     private Color color;
 
+
+
     public Items(String name,
                  Double price,
                  Integer xCoord,
@@ -22,6 +24,8 @@ public class Items {
                  Integer lengthSpan,
                  Integer widthSpan)
     {this.name = new SimpleStringProperty(name);}
+
+    abstract boolean getType();
 
     public double getPrice() {
         return price.get();

@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 
@@ -45,6 +46,9 @@ public class Controller implements Initializable {
     @FXML
     private Button newButton;
 
+    @FXML
+    private CheckBox containerCheck;
+
 
     public void initialize(URL url, ResourceBundle rb){
         loadTreeItems("SkyFarm");
@@ -53,15 +57,14 @@ public class Controller implements Initializable {
 
     //Sets tree and can load array of saved tree items
     public void loadTreeItems(String ...rootItems){
-        Items rootItem = new Items("Farm",0.0,0,0,0,0);
+        Items rootItem = new Item("Farm",0.0,0,0,0,0);
         TreeItem<String> root = new TreeItem<>(rootItem.getName());
         root.setExpanded(true);
         tree.setShowRoot(false);
         for(String itemString: rootItems){
-            root.getChildren().add(new TreeItem<>(new Items(itemString,0.0,1,1,1,1).getName()));
+            root.getChildren().add(new TreeItem<>(new Item(itemString,0.0,1,1,1,1).getName()));
         }
         tree.setRoot(root);
-
     }
 
     //Adds new item to the tree with the selected value
@@ -74,9 +77,13 @@ public class Controller implements Initializable {
         }
         else{
             //Add a bool to check for item-container
-            selectedItem.getChildren().add(new TreeItem<>(nameBox.getText()));
+            Items newItem = containerCheck.isSelected() ? new Item(nameBox.getText(), 1.0, 5, 5, 5, 5):
+                    new ItemContainer(nameBox.getText(), 1.0, 5, 5, 5, 5);
+            Main.itemMap.put(newItem.getName(), newItem);
+            selectedItem.getChildren().add(new TreeItem<>(newItem.getName()));
             selectedItem.setExpanded(true);
         }
+
 
     }
 
